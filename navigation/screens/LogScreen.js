@@ -16,7 +16,8 @@ class LogScreen extends Component {
       pokemonList: [],
       selectedPokemon: null,
       cp: '',
-      location: ''
+      location: '',
+      searchText: ''
     };
   }
 
@@ -32,30 +33,46 @@ class LogScreen extends Component {
       .catch(error => console.log(error));
   }
 
+  handleSearch = (text) => {
+    this.setState({ searchText: text });
+  }
+
   render() {
+    const filteredPokemon = this.state.pokemonList.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(this.state.searchText.toLowerCase())
+    );
+
     return (
       <View style={styles.container}>
         <View style={styles.sidePanel}>
-            <Text style={styles.title}>Select a Pokemon:</Text>
+            <Text style={styles.title}>Pokemon Details:</Text>
             <View style={styles.inputContainer}>
-            <TextInput 
-                style={styles.input}
-                placeholder="Combat Power"
-                onChangeText={(text) => this.setState({cp: text})}
-                value={this.state.cp}
-            />
-            <TextInput 
-                style={styles.input}
-                placeholder="Location"
-                onChangeText={(text) => this.setState({location: text})}
-                value={this.state.location}
-            />
+              <TextInput 
+                  style={styles.input}
+                  placeholder="Combat Power"
+                  onChangeText={(text) => this.setState({cp: text})}
+                  value={this.state.cp}
+              />
+              <TextInput 
+                  style={styles.input}
+                  placeholder="Location"
+                  onChangeText={(text) => this.setState({location: text})}
+                  value={this.state.location}
+              />
+            </View>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search"
+                onChangeText={this.handleSearch}
+                value={this.state.searchText}
+              />
             </View>
         </View>
         <FlatList
-          data={this.state.pokemonList}
+          data={filteredPokemon}
           renderItem={({ item }) => (
-            <View>
+            <View style={styles.listItem}>
               <Image
                 style={styles.image}
                 source={{
@@ -90,92 +107,113 @@ class LogScreen extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    backgroundColor: '#F8F8F8',
-    justifyContent: 'center', 
-    alignItems: 'center'
+    flex: 1,
+    backgroundColor: '#ECECEC',
+    paddingTop: 30,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333'
-  },
-  sidePanel: {
-    width: '30%',
-    backgroundColor: '#F5F5F5',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    color: '#333',
+    alignSelf: 'flex-start'
   },
   inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    paddingHorizontal: 20
+    marginTop: 20,
+    alignSelf: 'flex-start'
   },
   input: {
-    width: '48%',
+    width: '100%',
     height: 40,
     backgroundColor: '#FFF',
-    borderColor: 'gray',
+    borderColor: '#333',
     borderWidth: 1,
     paddingHorizontal: 10,
+    borderRadius: 5,
+    marginTop: 10
+  },
+  image: {
+    width: 60,
+    height: 60,
+    marginRight: 10
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    elevation: 5,
+    paddingHorizontal: 10,
+    height: 40,
+    width: '10%'
+  },
+  searchInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 10,
+    color: '#333'
+  },
+  searchButton: {
+    backgroundColor: '#333',
+    padding: 10,
     borderRadius: 5
   },
-  listItem: {
-    flexDirection: 'row', 
+  searchButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  pokemonContainer: {
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    marginTop: 20
+  },
+  pokemonItem: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     backgroundColor: '#FFF',
     borderRadius: 5,
     paddingVertical: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    elevation: 3
   },
-  image: {
-    width: 50, 
-    height: 50,
-    marginRight: 10
-  },
-  text: {
-    flex: 1,
+  
+  pokemonName: {
     fontSize: 16,
     color: '#333'
   },
-  selectedPokemon: {
+  selectedPokemonContainer: {
+    flex: 1.5,
     marginTop: 20,
+    marginLeft: 100,
     alignItems: 'center',
-    display: 'flex'
   },
   selectedImage: {
-    width: 150, 
-    height: 150,
-    marginBottom: 10,
-    borderRadius: 75
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    marginBottom: 10
+  },
+  selectedPokemonName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: '#333'
   },
   selectedText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 10,
     color: '#333'
-  },
-  logButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#333',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5
-  },
-  logButtonText: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold'
   }
 });
-
 
 export default LogScreen;
