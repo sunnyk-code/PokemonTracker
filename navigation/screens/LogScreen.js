@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import { 
   View, 
   Text, 
   FlatList, 
   Image,
   TextInput, 
-  StyleSheet 
+  StyleSheet,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -21,55 +22,91 @@ class LogScreen extends Component {
     };
   }
 
-  componentDidMount() {
-    // fetch the list of pokemon from the API and set the state
-    fetch('https://pokeapi.co/api/v2/pokemon?limit=779')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-          pokemonList: data.results,
-        });
-      })
-      .catch(error => console.log(error));
-  }
+  async componentDidMount() {
+    const response = await fetch('https://pogoapi.net/api/v1/released_pokemon.json');
+    const json = await response.json();
 
-  handleSearch = (text) => {
-    this.setState({ searchText: text });
+    this.setState({ pokemonList: Object.values(json) });
+
+    // fetch('https://pogoapi.net/api/v1/released_pokemon.json')
+    //   .then(response => response.json())
+    //   .then(pokeList => {
+    //     this.setState({ pokemonList: Object.values(pokeList) });
+    //   });
   }
 
   render() {
-    const filteredPokemon = this.state.pokemonList.filter(pokemon =>
-      pokemon.name.toLowerCase().includes(this.state.searchText.toLowerCase())
-    );
+    let filteredPokemon = [];
+
+    if (typeof this.state.pokemonList[0] !== 'undefined') {
+      filteredPokemon = this.state.pokemonList.filter(pokemon =>
+      {
+        return pokemon.name.toLowerCase().startsWith(this.state.searchText.toLowerCase());
+      });
+    }
+
+    console.log(filteredPokemon);
 
     return (
       <View style={styles.container}>
         <View style={styles.sidePanel}>
-            <Text style={styles.title}>Pokemon Details:</Text>
-            <View style={styles.inputContainer}>
-              <TextInput 
-                  style={styles.input}
-                  placeholder="Combat Power"
-                  onChangeText={(text) => this.setState({cp: text})}
-                  value={this.state.cp}
-              />
-              <TextInput 
-                  style={styles.input}
-                  placeholder="Location"
-                  onChangeText={(text) => this.setState({location: text})}
-                  value={this.state.location}
-              />
-            </View>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search"
-                onChangeText={this.handleSearch}
-                value={this.state.searchText}
-              />
+          <Text style={styles.title}>Pokemon Details:</Text>
+          <Text style={styles.text}>Select a Pokemon: </Text>
+          <View style={styles.searchContainer}>
+            <SearchableDropdown
+              onItemSelect={(item) => {
+                this.setState({ selectedPokemon: item });
+              }}
+              onTextChange={text => {
+                this.setState({ searchText: text });
+              }}
+              itemStyle={{
+                padding: 7.5,
+                marginTop: 0,
+                backgroundColor: '#ddd',
+                borderColor: '#bbb',
+                borderWidth: 1,
+                borderRadius: 5,
+              }}
+              itemTextStyle={{ color: '#222' }}
+              itemsContainerStyle={{ maxHeight: 140 }}
+              items={filteredPokemon}
+              resetValue={false}
+              textInputProps={
+              {
+                placeholder: "Search",
+                underlineColorAndroid: "transparent",
+                style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                }
+              }
+            }
+              listProps={
+                {
+                  nestedScrollEnabled: false,
+                }
+              }
+            />
             </View>
         </View>
-        <FlatList
+        {/* <View style={styles.inputContainer}>
+          <TextInput
+              style={styles.input}
+              placeholder="Combat Power"
+              // onChangeText={(text) => this.setState({cp: text})}
+              value={this.state.cp}
+          />
+          <TextInput
+              style={styles.input}
+              placeholder="Location"
+              // onChangeText={(text) => this.setState({location: text})}
+              value={this.state.location}
+          />
+        </View> */}
+        {/* <FlatList
           data={filteredPokemon}
           renderItem={({ item }) => (
             <View style={styles.listItem}>
@@ -88,9 +125,9 @@ class LogScreen extends Component {
             </View>
           )}
           keyExtractor={item => item.name}
-        />
+        /> */}
         
-        <View>
+        {/* <View>
         {this.state.selectedPokemon && (
           <View style={styles.selectedPokemon}>
             <Image
@@ -102,8 +139,9 @@ class LogScreen extends Component {
             <Text style={styles.selectedText}>{this.state.selectedPokemon.name}</Text>
           </View>
         )}
-        </View>
+        </View> */}
       </View>
+
     );
   }
 }
@@ -115,15 +153,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 27.5,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
     alignSelf: 'flex-start'
   },
-  inputContainer: {
-    marginTop: 20,
-    alignSelf: 'flex-start'
+  text: {
+    fontSize: 17.5,
   },
   input: {
     width: '100%',
@@ -141,16 +178,11 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   searchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 20,
+    marginTop: 12.5,
     backgroundColor: '#FFF',
     borderRadius: 5,
-    elevation: 5,
-    paddingHorizontal: 10,
-    height: 40,
-    width: '10%'
+    height: '20%',
+    width: '75%'
   },
   searchInput: {
     flex: 1,
