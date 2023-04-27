@@ -12,11 +12,14 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Checkbox from 'expo-checkbox'
+import FindScreen from './FindScreen';
+import { useNavigation } from '@react-navigation/native';
 
 class LogScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      switchComponent: false,
       pokemonList: [],
       selectedPokemon: null,
       cp: null,
@@ -27,7 +30,8 @@ class LogScreen extends Component {
       overThirty: false,
       isFocused: false,
       isBlurred: true,
-      isPressed: false
+      isPressed: false,
+      navigation: props.navigation
     };
   }
 
@@ -36,6 +40,19 @@ class LogScreen extends Component {
     const json = await response.json();
 
     this.setState({ pokemonList: Object.values(json) });
+  }
+
+  logPokemon() {
+    let description = "";
+
+    if (!this.state.cp || !this.state.attackIV || !this.state.defenseIV || !this.state.hpIV) {
+      description = "";
+    } else {
+      description = this.state.cp + " CP\n" + this.state.attackIV + " Attack IV\n"
+        + this.state.defenseIV + " Defense IV\n" + this.state.hpIV + " HP IV\n";
+    }
+    
+    new FindScreen().createMarker(this.state.selectedPokemon.name, description);
   }
 
   render() {
@@ -239,6 +256,11 @@ class LogScreen extends Component {
               }}
               onPressOut={() => {
                 this.state.isPressed = false;
+              }}
+                onPress={() => {
+                  // FindScreen.createMarker(this.state.selectedPokemon.name, description);
+                  this.state.navigation.navigate("Find");
+                  this.logPokemon();                  
               }}
               style={[styles.button, this.state.isPressed && styles.pressedButton]}
             >

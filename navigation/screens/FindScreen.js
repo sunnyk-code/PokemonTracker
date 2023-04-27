@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native'
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 
@@ -13,14 +13,16 @@ class FindScreen extends Component {
                longitude: 0,
                latitudeDelta: 0.003,
                longitudeDelta: 0.003
-           }
+           },
+           myLocation: null,
+           markers: []
        };
       
        Location.installWebGeolocationPolyfill()
        navigator.geolocation.getCurrentPosition(
            position => {
                this.setState({
-                   region: {
+                   myLocation: {
                        latitude: position.coords.latitude,
                        longitude: position.coords.longitude,
                        latitudeDelta: 0.003,
@@ -30,20 +32,45 @@ class FindScreen extends Component {
            }
        );
    }
+    
+    componentDidMount() {
+        console.log("MOUNTED");
+    }
+    
+    createMarker(name, description) {
+        const randLatitude = this.state.myLocation.latitude + (Math.random() - 0.5) * (0.003 / 2);
+        const randLongitude = this.state.myLocation.longitude + (Math.random() - 0.5) * (0.003 / 2);
 
+        const newCoordinate = {
+            latitude: randLatitude,
+            longitude: randLongitude,
+        };
 
-   addPokemon
+        const newMarker = {
+            coordinate: newCoordinate,
+            title: name,
+            description: description
+        };
 
+        this.state.markers.push(newMarker);
+        console.log(this.state.markers);
+    }
 
-   render() {
+    render() {
        return (
            <View style={styles.container}>
-               <MapView
+               {!this.state.myLocation && (<MapView
+                    style={styles.map}
+                    region={this.state.region}
+                    onRegionChangeComplete={region => this.setState({ region: region })}>
+               </MapView>)}
+               
+               {this.state.myLocation && (<MapView
                    style={styles.map}
-                   region={this.state.region}
-                   onRegionChangeComplete={region => this.setState({ region })}
-                   showsUserLocation={true}
-               />
+                   region={this.state.myLocation}
+                   onRegionChangeComplete={region => this.setState({ myLocation: region })}
+                   showsUserLocation={true}>
+                    </MapView>)}
            </View>
        );
    }

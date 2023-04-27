@@ -33,8 +33,9 @@ export default function MainContainer() {
                         return <Ionicons name = {iconName} size = {size} color = {color} />
                     },
                 })}>
+                <Tab.Screen name = {findName} component = {FindScreen}/>                
                 <Tab.Screen name = {logName} component = {LogScreen}/>
-                <Tab.Screen name = {findName} component={FindScreen}/>
+
 
             </Tab.Navigator>
 
