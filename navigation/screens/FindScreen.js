@@ -38,8 +38,12 @@ class FindScreen extends Component {
     }
     
     createMarker(name, description) {
-        const randLatitude = this.state.myLocation.latitude + (Math.random() - 0.5) * (0.003 / 2);
-        const randLongitude = this.state.myLocation.longitude + (Math.random() - 0.5) * (0.003 / 2);
+        // const randLatitude = this.state.myLocation.latitude + (Math.random() - 0.5) * (0.003 / 2);
+        // const randLongitude = this.state.myLocation.longitude + (Math.random() - 0.5) * (0.003 / 2);
+
+        //Change temporarily to get backend working
+        const randLatitude = (Math.random() - 0.5) * (0.003 / 2);
+        const randLongitude = (Math.random() - 0.5) * (0.003 / 2);
 
         const newCoordinate = {
             latitude: randLatitude,
@@ -52,6 +56,7 @@ class FindScreen extends Component {
             description: description
         };
 
+        //Add put api call here
         this.state.markers.push(newMarker);
         console.log(this.state.markers);
     }
