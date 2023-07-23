@@ -33,50 +33,36 @@ class FindScreen extends Component {
        );
    }
     
-    componentDidMount() {
-        console.log("MOUNTED");
-    }
     
-    createMarker(name, description) {
-        // const randLatitude = this.state.myLocation.latitude + (Math.random() - 0.5) * (0.003 / 2);
-        // const randLongitude = this.state.myLocation.longitude + (Math.random() - 0.5) * (0.003 / 2);
 
-        //Change temporarily to get backend working
-        const randLatitude = (Math.random() - 0.5) * (0.003 / 2);
-        const randLongitude = (Math.random() - 0.5) * (0.003 / 2);
-
-        const newCoordinate = {
-            latitude: randLatitude,
-            longitude: randLongitude,
-        };
-
-        const newMarker = {
-            coordinate: newCoordinate,
-            title: name,
-            description: description
-        };
-
-        //Add put api call here
-        this.state.markers.push(newMarker);
-        console.log(this.state.markers);
-    }
 
     render() {
        return (
-           <View style={styles.container}>
-               {!this.state.myLocation && (<MapView
-                    style={styles.map}
-                    region={this.state.region}
-                    onRegionChangeComplete={region => this.setState({ region: region })}>
-               </MapView>)}
+        //    <View style={styles.container}>
+        //        {!this.state.myLocation && (<MapView
+        //             style={styles.map}
+        //             region={this.state.region}
+        //             onRegionChangeComplete={region => this.setState({ region: region })}>
+        //        </MapView>)}
                
-               {this.state.myLocation && (<MapView
-                   style={styles.map}
-                   region={this.state.myLocation}
-                   onRegionChangeComplete={region => this.setState({ myLocation: region })}
-                   showsUserLocation={true}>
-                    </MapView>)}
-           </View>
+        //        {this.state.myLocation && (<MapView
+        //            style={styles.map}
+        //            region={this.state.myLocation}
+        //            onRegionChangeComplete={region => this.setState({ myLocation: region })}
+        //            showsUserLocation={true}>
+        //             </MapView>)}
+        //    </View>
+        <View>
+      {this.props.markers.map((marker) => (
+        <View key={marker._id} style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: 'gray' }}>
+          <Text>Name: {marker.name}</Text>
+          <Text>Description: {marker.description}</Text>
+          <Text>Latitude: {marker.latitude}</Text>
+          <Text>Longitude: {marker.longitude}</Text>
+          <Text>Timestamp: {marker.timestamp}</Text>
+        </View>
+      ))}
+    </View>
        );
    }
 }
