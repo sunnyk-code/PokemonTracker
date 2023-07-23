@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     width: 225,
     height: 225,
     borderRadius: 125,
-    marginTop: -17.5,
+    marginTop: -50,
     alignSelf: 'center',
   },
   selectedText: {
