@@ -26,10 +26,13 @@ export default function MainContainer() {
 
     // useEffect hook to update markers when the component mounts
     useEffect(() => {
-        updateMarkers();
+        const fetchData = async () => {
+            await updateMarkers();
+            await getCurrentLocation();
+        };
+        fetchData();
         // Poll for updated markers every 10 minutes
         const interval = setInterval(updateMarkers, 10 * 60 * 1000);
-        getCurrentLocation();
         // Clean up the interval when the component unmounts
         return () => clearInterval(interval);
 
@@ -38,10 +41,10 @@ export default function MainContainer() {
     // Function to fetch markers from the server
     const updateMarkers = async () => {
         try {
-        const response = await axios.get(serverURL + '/api')
-        setMarkers(response.data)
+            const response = await axios.get(serverURL + '/api')
+            setMarkers(response.data)
         } catch (error) {
-        console.error('Error fetching markers:', error);
+            console.error('Error fetching markers:', error);
         }
     };
 
@@ -55,20 +58,32 @@ export default function MainContainer() {
         updateMarkers();
     };
 
-    // Gets users current location
-    const getCurrentLocation = () => {
-        Location.installWebGeolocationPolyfill()
-        navigator.geolocation.getCurrentPosition(
-            position => {
+    const getCurrentLocation = async () => {
+        try {
+          await new Promise((resolve, reject) => {
+            Location.installWebGeolocationPolyfill();
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
                 setCurrentLocation({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    latitudeDelta: 0.003,
-                    longitudeDelta: 0.003
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  latitudeDelta: 0.003,
+                  longitudeDelta: 0.003,
                 });
-            }
-        );
-    }
+                resolve();
+              },
+              (error) => {
+                // Handle any error that occurs during geolocation retrieval
+                console.error('Error getting current location:', error);
+                reject(error);
+              }
+            );
+          });
+        } catch (error) {
+          // Handle any error that occurred during the Promise
+          console.error('Promise error:', error);
+        }
+      };
 
 
     

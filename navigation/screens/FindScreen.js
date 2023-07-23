@@ -4,26 +4,31 @@ import MapView, { Marker } from 'react-native-maps';
 
 
 class FindScreen extends Component {
+
    constructor(props) {
        super(props);
        this.state = {
            region: null,
            markers: [],
-           myLocation: null
-       };
-      
-       
+           selectedMarker: null,
+       }; 
    }
+
+    handleMarkerPress = (marker) => {
+        this.setState({ selectedMarker: marker });
+    };
+
 
 
 
     render() {
        const { markers, currentLocation } = this.props;
+       const { region, selectedMarker } = this.state;
        return (
            <View style={styles.container}>
                 <MapView
                    style={styles.map}
-                   region={this.state.region}
+                   region={region}
                    initialRegion={currentLocation}
                    onRegionChangeComplete={newRegion => this.setState({ region: newRegion })}
                    showsUserLocation={true}>
@@ -31,10 +36,24 @@ class FindScreen extends Component {
                         <Marker
                             key={marker.id}
                             coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-                            image={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${marker.id}.png` }}
-                        />
+                            onPress={() => this.handleMarkerPress(marker)}
+                        >
+                            <Image
+                                source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${marker.id}.png` }}
+                                style={{ width: 100, height: 100}} 
+                            />
+                        </Marker>
                     ))}
+                    
                 </MapView>
+                {selectedMarker && (
+                        <View style={styles.markerInfoContainer}>
+                            <Text style={styles.markerInfoText}>
+                                <Text style={styles.boldText}>Description:</Text>
+                                {selectedMarker.description}
+                            </Text>
+                        </View>
+                    )}
            </View>
        );
    }
@@ -52,6 +71,21 @@ map: {
   width: '100%',
   height: '100%',
 },
+markerInfoContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    right: 10,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+  },
+  markerInfoText: {
+    textAlign: 'center', 
+  },
+  boldText: {
+    fontWeight: 'bold', // Make the text bold
+  },
 });
 
 

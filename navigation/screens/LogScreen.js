@@ -48,8 +48,8 @@ class LogScreen extends Component {
     if (!this.state.cp || !this.state.attackIV || !this.state.defenseIV || !this.state.hpIV) {
       description = "";
     } else {
-      description = this.state.cp + " CP\n" + this.state.attackIV + " Attack IV\n"
-        + this.state.defenseIV + " Defense IV\n" + this.state.hpIV + " HP IV\n";
+      description = "\n" + this.state.cp + " CP\n" + this.state.attackIV + " Attack IV\n"
+        + this.state.defenseIV + " Defense IV\n" + this.state.hpIV + " HP IV";
     }
 
     marker = {
