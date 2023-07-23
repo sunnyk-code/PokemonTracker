@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios';
+import * as Location from 'expo-location';
 
 
 //Screens
@@ -21,14 +22,17 @@ export default function MainContainer() {
     const serverURL = 'http://10.0.0.91:5050';
 
     const [markers, setMarkers] = useState([]);
+    const [currentLocation, setCurrentLocation] = useState(null);
 
     // useEffect hook to update markers when the component mounts
     useEffect(() => {
         updateMarkers();
         // Poll for updated markers every 10 minutes
         const interval = setInterval(updateMarkers, 10 * 60 * 1000);
+        getCurrentLocation();
         // Clean up the interval when the component unmounts
         return () => clearInterval(interval);
+
     }, []);
 
     // Function to fetch markers from the server
@@ -44,12 +48,28 @@ export default function MainContainer() {
       //Adds a new marker 
     const addMarker = async (marker) => {
         try {
-        const response = await axios.post(serverURL + '/api', marker)
+            const response = await axios.post(serverURL + '/api', marker)
         } catch (error) {
             console.error('Error adding marker:', error);
         }
         updateMarkers();
     };
+
+    // Gets users current location
+    const getCurrentLocation = () => {
+        Location.installWebGeolocationPolyfill()
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                setCurrentLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.003,
+                    longitudeDelta: 0.003
+                });
+            }
+        );
+    }
+
 
     
 
@@ -71,10 +91,10 @@ export default function MainContainer() {
                     },
                 })}>
                 <Tab.Screen name = {findName}>
-                    {props => <FindScreen markers = {markers}/>}
+                    {props => <FindScreen markers = {markers} currentLocation = {currentLocation}  />}
                 </Tab.Screen>                
                 <Tab.Screen name = {logName}>
-                    {props => <LogScreen updateMarkers = {updateMarkers} addMarker = {addMarker} />}
+                    {props => <LogScreen updateMarkers = {updateMarkers} addMarker = {addMarker} currentLocation = {currentLocation} />}
                 </Tab.Screen>
 
 
