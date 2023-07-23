@@ -49,7 +49,7 @@ class FindScreen extends Component {
                 {selectedMarker && (
                         <View style={styles.markerInfoContainer}>
                             <Text style={styles.markerInfoText}>
-                                <Text style={styles.boldText}>Description:</Text>
+                                <Text style={styles.boldText}>{selectedMarker.name}</Text>
                                 {selectedMarker.description}
                             </Text>
                         </View>
