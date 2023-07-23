@@ -3,9 +3,11 @@ import { View, Text} from 'react-native';
 //import Navigation dependencies
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios';
 import * as Location from 'expo-location';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { StatusBar } from 'react-native'; 
+StatusBar.setBarStyle('dark-content', true);
 
 
 //Screens
