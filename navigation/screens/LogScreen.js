@@ -31,7 +31,7 @@ class LogScreen extends Component {
       isFocused: false,
       isBlurred: true,
       isPressed: false,
-      navigation: props.navigation
+      navigation: props.navigation,
     };
   }
 
@@ -48,12 +48,22 @@ class LogScreen extends Component {
     if (!this.state.cp || !this.state.attackIV || !this.state.defenseIV || !this.state.hpIV) {
       description = "";
     } else {
-      description = this.state.cp + " CP\n" + this.state.attackIV + " Attack IV\n"
-        + this.state.defenseIV + " Defense IV\n" + this.state.hpIV + " HP IV\n";
+      description = "\n" + this.state.cp + " CP\n" + this.state.attackIV + " Attack IV\n"
+        + this.state.defenseIV + " Defense IV\n" + this.state.hpIV + " HP IV";
     }
-    
-    new FindScreen().createMarker(this.state.selectedPokemon.name, description);
+
+    marker = {
+      name: this.state.selectedPokemon.name,
+      description: description,
+      latitude: this.props.currentLocation.latitude,
+      longitude: this.props.currentLocation.longitude,
+      id: this.state.selectedPokemon.id,
+    }
+    this.props.addMarker(marker)
   }
+
+
+
 
   render() {
     let filteredPokemon = [];
@@ -259,7 +269,7 @@ class LogScreen extends Component {
               }}
                 onPress={() => {
                   // FindScreen.createMarker(this.state.selectedPokemon.name, description);
-                  this.state.navigation.navigate("Find");
+                  // this.props.navigation.navigate("Find");
                   this.logPokemon();                  
               }}
               style={[styles.button, this.state.isPressed && styles.pressedButton]}
