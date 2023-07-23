@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
     description: req.body.description,
     longitude: req.body.longitude,
     latitude: req.body.latitude,
+    id: req.body.id,
     timestamp: new Date()
   };
   let collection = await db.collection("Markers");

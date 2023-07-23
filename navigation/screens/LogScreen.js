@@ -57,6 +57,7 @@ class LogScreen extends Component {
       description: description,
       latitude: 2,
       longitude: 3,
+      id: this.state.selectedPokemon.id,
     }
     this.props.addMarker(marker)
   }
